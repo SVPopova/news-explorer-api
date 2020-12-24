@@ -7,7 +7,7 @@ const cors = require('cors');
 const { usersRouter, articlesRouter } = require('./routes/index.js');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { login, createUser } = require('./controllers/users.js');
-const { validUserLoginReg } = require('./middlewares/validation.js');
+const { validUserLogin, validUserReg } = require('./middlewares/validation.js');
 const NotFoundError = require('./errors/NotFoundError');
 require('dotenv').config();
 
@@ -36,8 +36,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(requestLogger);
 
-app.post('/signin', validUserLoginReg, login);
-app.post('/signup', validUserLoginReg, createUser);
+app.post('/signin', validUserLogin, login);
+app.post('/signup', validUserReg, createUser);
 
 app.use('/users', usersRouter);
 app.use('/articles', articlesRouter);
