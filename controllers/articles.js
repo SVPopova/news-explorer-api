@@ -29,8 +29,8 @@ module.exports.deleteArticle = (req, res, next) => {
       if (!info) {
         throw new NotFoundError('Такой карточки не существует');
       }
-      if (info.owner.toString() === req.user._id) {
-        info.findByIdAndRemove(req.params.articleId)
+      if (info.owner.toString() === req.user._id.toString()) {
+        info.deleteOne(info)
           .then((data) => {
             if (!data) {
               throw new NotFoundError('Такой карточки не существует');
@@ -39,7 +39,7 @@ module.exports.deleteArticle = (req, res, next) => {
           })
           .catch(next);
       } else {
-        throw new ForbiddenError('Вы не можете удалить эту');
+        throw new ForbiddenError('Вы не можете удалить эту карточку');
       }
     })
     .catch(next);
