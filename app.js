@@ -25,7 +25,7 @@ mongoose.connect('mongodb://localhost:27017/newsbd', {
   useFindAndModify: false,
 });
 
-app.use('*', cors({ origin: 'http://svpopova.students.nomoredomains.work' }));
+app.use('*', cors({ origin: 'http://svpopova.students.nomoredomains.rocks' }));
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
