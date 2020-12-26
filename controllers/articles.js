@@ -1,12 +1,13 @@
 const article = require('../models/article');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
+const { notFoundMessageArticle, forbiddenErrorMessageArticle, notFoundMessage } = require('../errors/errorsMessage');
 
 module.exports.findArticle = (req, res, next) => {
   article.find({})
     .then((info) => {
       if (!info) {
-        throw new NotFoundError('Переданы некорректные данные');
+        throw new NotFoundError(notFoundMessage);
       }
       return res.send(info);
     })
@@ -17,7 +18,7 @@ module.exports.createArticle = (req, res, next) => {
   article.create({ owner, ...req.body })
     .then((info) => {
       if (!info) {
-        throw new NotFoundError('Переданы некорректные данные');
+        throw new NotFoundError(notFoundMessage);
       }
       return res.send(info);
     })
@@ -27,19 +28,19 @@ module.exports.deleteArticle = (req, res, next) => {
   article.findById(req.params.articleId)
     .then((info) => {
       if (!info) {
-        throw new NotFoundError('Такой карточки не существует');
+        throw new NotFoundError(notFoundMessageArticle);
       }
       if (info.owner.toString() === req.user._id.toString()) {
         info.deleteOne(info)
           .then((data) => {
             if (!data) {
-              throw new NotFoundError('Такой карточки не существует');
+              throw new NotFoundError(notFoundMessageArticle);
             }
             res.send({ data });
           })
           .catch(next);
       } else {
-        throw new ForbiddenError('Вы не можете удалить эту карточку');
+        throw new ForbiddenError(forbiddenErrorMessageArticle);
       }
     })
     .catch(next);

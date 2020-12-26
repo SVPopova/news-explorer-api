@@ -4,8 +4,8 @@
   "description": "Дипломная работа Поповой С.В.",
   "main": "app.js",
   "scripts": {
-    "dev": "node app.js",
-    "start": "nodemon app.js",
+    "dev": "nodemon app.js",
+    "start": "app.js",
     "lint": "eslint ."
   },
   "repository": {

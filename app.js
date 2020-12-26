@@ -9,16 +9,19 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { login, createUser } = require('./controllers/users.js');
 const { validUserLogin, validUserReg } = require('./middlewares/validation.js');
 const NotFoundError = require('./errors/NotFoundError');
+const { MONGOURL, RATELIMWIN, RATELIMMAX } = require('./config');
+const { serverErrorMessage } = require('./errors/errorsMessage');
+const { errHandler } = require('./middlewares/errorsHandling.js');
 require('dotenv').config();
 
 const app = express();
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, MONGODB = MONGOURL } = process.env;
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
+  windowMs: RATELIMWIN,
+  max: RATELIMMAX,
 });
 
-mongoose.connect('mongodb://localhost:27017/newsbd', {
+mongoose.connect(MONGODB, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
@@ -28,7 +31,7 @@ mongoose.connect('mongodb://localhost:27017/newsbd', {
 app.use('*', cors({ origin: 'http://svpopova.students.nomoredomains.rocks' }));
 app.get('/crash-test', () => {
   setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
+    throw new Error(serverErrorMessage);
   }, 0);
 });
 app.use(limiter);
@@ -43,18 +46,14 @@ app.use('/users', usersRouter);
 app.use('/articles', articlesRouter);
 
 app.all('*', () => {
-  throw new NotFoundError('Запрашиваемый ресурс не найден');
+  throw new NotFoundError(serverErrorMessage);
 });
 
 app.use(errors());
 
 app.use(errorLogger);
 
-app.use((err, req, res, next) => {
-  res.status(err.statusCode).send({ message: err.message });
-  res.status(err.statusCode || 500).send({ message: err.status === 500 ? 'Ошибка сервера' : err.message });
-  next();
-});
+app.use(errHandler);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
