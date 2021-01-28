@@ -4,7 +4,12 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const RegAuthError = require('../errors/RegAuthError');
 const MongoError = require('../errors/MongoError');
-const { badRequestMessage, notFoundMessageUser, successMessage, mongoErrorMessage } = require('../errors/errorsMessage');
+const {
+  badRequestMessage,
+  notFoundMessageUser,
+  successMessage,
+  mongoErrorMessage,
+} = require('../errors/errorsMessage');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 

@@ -28,7 +28,7 @@ mongoose.connect(MONGODB, {
   useFindAndModify: false,
 });
 
-app.use('*', cors({ origin: 'http://svpopova.students.nomoredomains.rocks' }));
+app.use('*', cors());
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error(serverErrorMessage);
